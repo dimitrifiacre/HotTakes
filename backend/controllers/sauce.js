@@ -25,3 +25,10 @@ exports.createSauce = (req, res, next) => {
     .then(() => res.status(201).json({ message: "Nouvelle sauce ajoutée" }))
     .catch((error) => res.status(400).json({ error }));
 };
+
+// On affiche les informations d'une sauce grâce à son ID
+exports.getOneSauce = (req, res, next) => {
+  Sauce.findOne({ _id: req.params.id })
+    .then((sauce) => res.status(200).json(sauce))
+    .catch((error) => res.status(400).json({ error }));
+};
