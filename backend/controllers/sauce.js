@@ -56,7 +56,28 @@ exports.deleteSauce = (req, res, next) => {
 
 // On modifie une sauce grâce à son ID et aux infos renseignées
 exports.updateSauce = (req, res, next) => {
-  Sauce.updateOne({ _id: req.params.id }, { ...req.body, _id: req.params.id })
-    .then(() => res.status(200).json({ message: "Sauce modifiée" }))
-    .catch((error) => res.status(400).json({ error }));
+  Sauce.findOne({ _id: req.params.id })
+    .then((sauce) => {
+      if (sauce.userId != req.auth.userId) {
+        res.status(401).json({ error: "Requête non autorisée" });
+      } else {
+        const filename = sauce.imageUrl.split("/images/")[1];
+        const sauceObject = JSON.parse(req.body.sauce);
+        fs.unlink(`images/${filename}`, () => {
+          const sauceModified = {
+            ...sauceObject,
+            imageUrl: `${req.protocol}://${req.get("host")}/images/${
+              req.file.filename
+            }`,
+          };
+          Sauce.updateOne(
+            { _id: req.params.id },
+            { ...sauceModified, _id: req.params.id }
+          )
+            .then(() => res.status(200).json({ message: "Sauce modifiée" }))
+            .catch((error) => res.status(400).json({ error }));
+        });
+      }
+    })
+    .catch((error) => res.status(500).json({ error }));
 };
