@@ -1,3 +1,6 @@
+// On importe le package
+const fs = require("fs");
+
 // On importe le modèle sauce
 const Sauce = require("../models/sauce");
 
@@ -35,9 +38,16 @@ exports.getOneSauce = (req, res, next) => {
 
 // On supprime une sauce grâce à son ID
 exports.deleteSauce = (req, res, next) => {
-  Sauce.deleteOne({ _id: req.params.id })
-    .then(() => res.status(200).json({ message: "Sauce supprimée" }))
-    .catch((error) => res.status(400).json({ error }));
+  Sauce.findOne({ _id: req.params.id })
+    .then((sauce) => {
+      const filename = sauce.imageUrl.split("/images/")[1];
+      fs.unlink(`images/${filename}`, () => {
+        Sauce.deleteOne({ _id: req.params.id })
+          .then(() => res.status(200).json({ message: "Sauce supprimée" }))
+          .catch((error) => res.status(400).json({ error }));
+      });
+    })
+    .catch((error) => res.status(500).json({ error }));
 };
 
 // On modifie une sauce grâce à son ID et aux infos renseignées
