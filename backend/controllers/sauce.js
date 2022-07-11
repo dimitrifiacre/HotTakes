@@ -32,3 +32,10 @@ exports.getOneSauce = (req, res, next) => {
     .then((sauce) => res.status(200).json(sauce))
     .catch((error) => res.status(400).json({ error }));
 };
+
+// On supprime une sauce grâce à son ID
+exports.deleteSauce = (req, res, next) => {
+  Sauce.deleteOne({ _id: req.params.id })
+    .then(() => res.status(200).json({ message: "Sauce supprimée" }))
+    .catch((error) => res.status(400).json({ error }));
+};
