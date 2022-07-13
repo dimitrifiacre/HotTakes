@@ -35,7 +35,8 @@
      npm install
      ```
 2. Configurer les variables d'environnement  
-Crée un fichier **.env** et définir une clé `DB_CONNECTION` pour l'URI de MongoDB et `SECRET_TOKEN` pour la clé secrète.
+Modifier le nom du fichier **example.env** en **.env** et remplir la clé `DB_CONNECTION` pour l'URI de MongoDB  
+et `SECRET_TOKEN` pour la clé secrète.
 3. Lancer le serveur
     ```
     npm start
